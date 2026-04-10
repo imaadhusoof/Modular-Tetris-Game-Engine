@@ -4,6 +4,8 @@ import org.junit.Test;
 import tetris.Tetris;
 import tetris.utility.PropertiesLoader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -76,18 +78,27 @@ public class GameTest {
         Tetris game = new Tetris(properties);
         String logResult = game.runApp();
         System.out.println("logResult = " + logResult);
-        String statisticsFilePath = "statistics.txt";
-        Scanner scanner = new Scanner(statisticsFilePath);
-        StringBuilder statisticsLogBuilder = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            statisticsLogBuilder.append(scanner.nextLine() + "\n");
-        }
-        String statisticsLog = statisticsLogBuilder.toString();
+        String statisticsLog = getStatisticsLog();
         Assert.assertTrue(statisticsLog.contains("Score: 2"));
         Assert.assertTrue(statisticsLog.contains("I: 10"));
         Assert.assertTrue(statisticsLog.contains("S: 1"));
         Assert.assertTrue(statisticsLog.contains("O: 1"));
         Assert.assertTrue(statisticsLog.contains("T: 4"));
+    }
+
+    private static String getStatisticsLog() {
+        String statisticsFilePath = "statistics.txt";
+        Scanner scanner;
+        try {
+            scanner = new Scanner(new File(statisticsFilePath));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        StringBuilder statisticsLogBuilder = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            statisticsLogBuilder.append(scanner.nextLine()).append("\n");
+        }
+        return statisticsLogBuilder.toString();
     }
 
     @Test
@@ -121,13 +132,7 @@ public class GameTest {
         Assert.assertFalse(logResult.contains("Block: /. Location: 8-5. Rotation: 0"));
         Assert.assertTrue(logResult.contains("Block: /. Location: 8-6. Rotation: 0"));
 
-        String statisticsFilePath = "statistics.txt";
-        Scanner scanner = new Scanner(statisticsFilePath);
-        StringBuilder statisticsLogBuilder = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            statisticsLogBuilder.append(scanner.nextLine() + "\n");
-        }
-        String statisticsLog = statisticsLogBuilder.toString();
+        String statisticsLog = getStatisticsLog();
         Assert.assertTrue(statisticsLog.contains("Score: 2"));
         Assert.assertTrue(statisticsLog.contains("I: 8"));
         Assert.assertTrue(statisticsLog.contains("S: 1"));
