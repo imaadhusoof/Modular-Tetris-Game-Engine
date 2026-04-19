@@ -15,7 +15,10 @@ class Plus extends TetroPiece {
     Location[][] rotationLocation = blockPiece.getRotationLocations();
 
     for (int i = 0; i < rotationLocation.length; i++)
-      blocks.add(new TetroBlock(blockPiece.getBlockIndex(), rotationLocation[i]));
+      // TODO: chagne to their respective index later with `.getBlockIndex()`. Right
+      // now: no sprite for the
+      // new pieces yet
+      blocks.add(new TetroBlock(2, rotationLocation[i]));
 
     // full 3x3 bounding box
     relativeHighlightLocations[0][0] = new Location(0, 0);
