@@ -50,10 +50,25 @@ public enum BlockPieces {
         {{1,1},{-1,0},{0,-1},{1,0}},
         {{2,1},{-1,1},{-1,-1},{1,-1}}
     }),
-    // New pieces — coordinates defined in their own piece classes (non-rotating)
-    CROSS(7, "X", null),
-    PLUS(8, "+", null),
-    SLASH(9, "/", null);
+    CROSS(7, "X", new int[][][] {
+        {{0,0}},
+        {{2,0}},
+        {{1,1}},
+        {{0,2}},
+        {{2,2}}
+    }),
+    PLUS(8, "+", new int[][][] {
+        {{1,0}},
+        {{0,1}},
+        {{1,1}},
+        {{2,1}},
+        {{1,2}}
+    }),
+    SLASH(9, "/", new int[][][] {
+        {{2,0}},
+        {{1,1}},
+        {{0,2}}
+    });
 
     private final int blockIndex;
     private final String blockName;
@@ -76,10 +91,8 @@ public enum BlockPieces {
     /**
      * Builds the rotation location table for this piece.
      * Returns Location[numBlocks][numRotations].
-     * Returns null for pieces that manage their own coordinates (CROSS, PLUS, SLASH).
      */
     public Location[][] getRotationLocations() {
-        if (blockCoordinates == null) return null;
         int numBlocks = blockCoordinates.length;
         int numRotations = blockCoordinates[0].length;
         Location[][] locs = new Location[numBlocks][numRotations];
