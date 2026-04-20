@@ -12,7 +12,7 @@ public abstract class TetroPiece extends Actor {
   protected int rotationId = 0;
   protected int nb;
   protected ArrayList<TetroBlock> blocks = new ArrayList<>();
-  protected Actor nextTetrisBlock = null;
+  protected TetroPiece nextTetrisBlock = null;
   protected String autoBlockMove = "";
   protected int autoBlockIndex = 0;
 
