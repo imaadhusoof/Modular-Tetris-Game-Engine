@@ -13,8 +13,8 @@ import javax.swing.*;
 
 public class Tetris extends JFrame implements GGActListener {
   public static final String statisticsFilePath = "statistics.txt";
-  private Actor currentBlock = null; // Currently active block
-  private Actor blockPreview = null; // block in preview window
+  private TetroPiece currentBlock = null; // Currently active block
+  private TetroPiece blockPreview = null; // block in preview window
   private int score = 0;
   private Random random = new Random(0);
 
@@ -137,16 +137,46 @@ public class Tetris extends JFrame implements GGActListener {
     TetroPiece preview = null;
 
     switch (randomBlockPiece) {
-      case BlockPieces.I:   t = new I(this);     preview = new I(this);     break;
-      case BlockPieces.J:   t = new J(this);     preview = new J(this);     break;
-      case BlockPieces.L:   t = new L(this);     preview = new L(this);     break;
-      case BlockPieces.O:   t = new O(this);     preview = new O(this);     break;
-      case BlockPieces.S:   t = new S(this);     preview = new S(this);     break;
-      case BlockPieces.T:   t = new T(this);     preview = new T(this);     break;
-      case BlockPieces.Z:   t = new Z(this);     preview = new Z(this);     break;
-      case BlockPieces.CROSS: t = new Cross(this); preview = new Cross(this); break;
-      case BlockPieces.PLUS:  t = new Plus(this);  preview = new Plus(this);  break;
-      case BlockPieces.SLASH: t = new Slash(this); preview = new Slash(this); break;
+      case BlockPieces.I:
+        t = new I(this);
+        preview = new I(this);
+        break;
+      case BlockPieces.J:
+        t = new J(this);
+        preview = new J(this);
+        break;
+      case BlockPieces.L:
+        t = new L(this);
+        preview = new L(this);
+        break;
+      case BlockPieces.O:
+        t = new O(this);
+        preview = new O(this);
+        break;
+      case BlockPieces.S:
+        t = new S(this);
+        preview = new S(this);
+        break;
+      case BlockPieces.T:
+        t = new T(this);
+        preview = new T(this);
+        break;
+      case BlockPieces.Z:
+        t = new Z(this);
+        preview = new Z(this);
+        break;
+      case BlockPieces.CROSS:
+        t = new Cross(this);
+        preview = new Cross(this);
+        break;
+      case BlockPieces.PLUS:
+        t = new Plus(this);
+        preview = new Plus(this);
+        break;
+      case BlockPieces.SLASH:
+        t = new Slash(this);
+        preview = new Slash(this);
+        break;
     }
 
     if (isAuto) {
@@ -177,7 +207,7 @@ public class Tetris extends JFrame implements GGActListener {
     return isAuto ? AUTO_SIMULATION_PERIOD : MANUAL_SIMULATION_PERIOD;
   }
 
-  public void moveToNextTetris(Actor t) {
+  public void moveToNextTetris(TetroPiece t) {
     currentBlock = t;
     gameGrid1.setSimulationPeriod(defaultSimulationPeriod());
   }
@@ -209,125 +239,19 @@ public class Tetris extends JFrame implements GGActListener {
    * Arrow down for going down
    */
   private void moveBlock(int keyEvent) {
-    if (currentBlock instanceof I) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((I) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((I) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((I) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((I) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof J) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((J) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((J) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((J) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((J) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof L) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((L) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((L) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((L) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((L) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof O) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((O) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((O) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((O) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((O) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof S) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((S) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((S) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((S) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((S) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof T) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((T) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((T) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((T) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((T) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
-    } else if (currentBlock instanceof Z) {
-      switch (keyEvent) {
-        case KeyEvent.VK_UP:
-          ((Z) currentBlock).rotate();
-          break;
-        case KeyEvent.VK_LEFT:
-          ((Z) currentBlock).left();
-          break;
-        case KeyEvent.VK_RIGHT:
-          ((Z) currentBlock).right();
-          break;
-        case KeyEvent.VK_DOWN:
-          ((Z) currentBlock).drop();
-          break;
-        default:
-          return;
-      }
+    switch (keyEvent) {
+      case KeyEvent.VK_UP:
+        currentBlock.rotate();
+        break;
+      case KeyEvent.VK_LEFT:
+        currentBlock.left();
+        break;
+      case KeyEvent.VK_RIGHT:
+        currentBlock.right();
+        break;
+      case KeyEvent.VK_DOWN:
+        currentBlock.drop();
+        break;
     }
   }
 
