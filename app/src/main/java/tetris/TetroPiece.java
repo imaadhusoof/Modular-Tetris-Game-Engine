@@ -2,6 +2,7 @@ package tetris;
 
 import ch.aplu.jgamegrid.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TetroPiece extends Actor {
 
@@ -13,7 +14,7 @@ public abstract class TetroPiece extends Actor {
   protected int nb;
   protected ArrayList<TetroBlock> blocks = new ArrayList<>();
   protected TetroPiece nextTetrisBlock = null;
-  protected String autoBlockMove = "";
+  protected List<BlockAction> autoBlockMoves = new ArrayList<>();
   protected int autoBlockIndex = 0;
 
   // Highlight arrays: dimensions vary per piece, so subclass constructors
@@ -29,38 +30,39 @@ public abstract class TetroPiece extends Actor {
   /** Each concrete piece returns a descriptive string for logging/testing. */
   public abstract String toString();
 
-  public void setAutoBlockMove(String autoBlockMove) {
-    this.autoBlockMove = autoBlockMove;
+  /**
+   * Parses a move-sequence string (e.g. "LLTR") into a list of BlockActions
+   * and stores them for replay during auto mode. Unrecognised characters are
+   * silently ignored.
+   *
+   * @param moveSequence the raw action string from the properties file
+   */
+  public void setAutoBlockMove(String moveSequence) {
+    autoBlockMoves = new ArrayList<>();
+    for (char c : moveSequence.toCharArray()) {
+      BlockAction action = BlockAction.fromChar(c);
+      if (action != null)
+        autoBlockMoves.add(action);
+    }
   }
 
   /**
-   * Check if the block can be played automatically based on the properties file
+   * Returns true if there are remaining actions to replay in auto mode.
    */
   private boolean canAutoPlay() {
-    return autoBlockMove != null
-        && !autoBlockMove.equals("")
-        && autoBlockMove.length() > autoBlockIndex;
+    return autoBlockIndex < autoBlockMoves.size();
   }
 
   /**
-   * Based on the input in the properties file, the block can move automatically
+   * Replays the next action in the pre-defined move sequence.
    */
   private void autoMove() {
-    String moveString = autoBlockMove.substring(autoBlockIndex, autoBlockIndex + 1);
-    switch (moveString) {
-      case "L":
-        left();
-        break;
-      case "R":
-        right();
-        break;
-      case "T":
-        rotate();
-        break;
-      default:
-        break;
+    BlockAction action = autoBlockMoves.get(autoBlockIndex++);
+    switch (action) {
+      case L: left();   break;
+      case R: right();  break;
+      case T: rotate(); break;
     }
-    autoBlockIndex++;
   }
 
   // ====== Main game loop entry point =====
