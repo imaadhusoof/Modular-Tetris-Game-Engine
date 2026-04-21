@@ -80,7 +80,7 @@ public class GameTest {
         System.out.println("logResult = " + logResult);
         String statisticsLog = getStatisticsLog();
         Assert.assertTrue(statisticsLog.contains("Score: 2"));
-        Assert.assertTrue(statisticsLog.contains("I: 10"));
+        Assert.assertTrue(statisticsLog.contains("I: 11"));
         Assert.assertTrue(statisticsLog.contains("S: 1"));
         Assert.assertTrue(statisticsLog.contains("O: 1"));
         Assert.assertTrue(statisticsLog.contains("T: 4"));
@@ -108,6 +108,8 @@ public class GameTest {
         Tetris game = new Tetris(properties);
         String logResult = game.runApp();
         System.out.println("logResult = " + logResult);
+        String statisticsLog = getStatisticsLog();
+
         Assert.assertTrue(logResult.contains("Block: O. Location: 0-28. Rotation: 0"));
         Assert.assertTrue(logResult.contains("Block: T. Location: 3-29. Rotation: 2"));
         Assert.assertTrue(logResult.contains("Block: T. Location: 6-29. Rotation: 2"));
@@ -132,9 +134,8 @@ public class GameTest {
         Assert.assertFalse(logResult.contains("Block: /. Location: 8-5. Rotation: 0"));
         Assert.assertTrue(logResult.contains("Block: /. Location: 8-6. Rotation: 0"));
 
-        String statisticsLog = getStatisticsLog();
         Assert.assertTrue(statisticsLog.contains("Score: 2"));
-        Assert.assertTrue(statisticsLog.contains("I: 8"));
+        Assert.assertTrue(statisticsLog.contains("I: 9"));
         Assert.assertTrue(statisticsLog.contains("S: 1"));
         Assert.assertTrue(statisticsLog.contains("O: 2"));
         Assert.assertTrue(statisticsLog.contains("T: 4"));
