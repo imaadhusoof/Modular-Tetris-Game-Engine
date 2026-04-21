@@ -1,6 +1,7 @@
+
 package tetris;
 
-class TetroPieceFactory {
+class PieceFactory {
   public static TetroPiece create(BlockPieces piece, Tetris tetris) {
 
     return switch (piece) {
