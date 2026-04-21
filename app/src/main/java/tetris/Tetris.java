@@ -2,55 +2,31 @@ package tetris;// Tetris.java
 
 import ch.aplu.jgamegrid.*;
 import tetris.utility.Logger;
+import tetris.utility.TetrisConstants;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Properties;
 import java.awt.event.KeyEvent;
 import java.awt.*;
 import javax.swing.*;
 
 public class Tetris extends JFrame implements GGActListener {
   public static final String statisticsFilePath = "statistics.txt";
-  private TetroPiece currentBlock = null; // Currently active block
-  private TetroPiece blockPreview = null; // block in preview window
+  private TetroPiece currentBlock = null;
   private int score = 0;
-  private Random random = new Random(0);
 
   private boolean isAuto = false;
 
-  private int MANUAL_SIMULATION_PERIOD = 300;
-  private int MANUAL_DROP_SIMULATION_PERIOD = 50;
-  private int AUTO_SIMULATION_PERIOD = 50;
+  private PieceManager pieceManager;
 
-  // For testing mode, the block will be moved automatically based on the
-  // blockActions.
-  // L is for Left, R is for Right, T is for turning (rotating), and D for down
-  private String[] blockActions = null;
-  private int blockActionIndex = 0;
-
-  private String[] blockPieces = null;
-  private int blockPieceIndex = 0;
   static Logger logger = new Logger();
 
-  /**
-   * Initialise object
-   */
-  private void initWithProperties(Properties properties) {
-    random = new Random(30006);
-    isAuto = Boolean.parseBoolean(properties.getProperty("isAuto"));
-    String blockActionProperty = properties.getProperty("actions", "");
-    blockActions = blockActionProperty.split(",");
-
-    String blockPieceProperty = properties.getProperty("pieces", "");
-    blockPieces = blockPieceProperty.split(",");
-  }
-
   public Tetris(Properties properties) {
-    // Initialise value
-    initWithProperties(properties);
-    blockActionIndex = 0;
+    this.isAuto = Boolean.parseBoolean(properties.getProperty("isAuto"));
+    this.pieceManager = new PieceManager(this, properties, isAuto);
 
     // Set up the UI components. No need to modify the UI Components
     tetrisComponents = new TetrisComponents();
@@ -60,7 +36,7 @@ public class Tetris extends JFrame implements GGActListener {
     gameGrid1.setSimulationPeriod(defaultSimulationPeriod());
 
     // Add the first block to start
-    currentBlock = createRandomTetrisBlock();
+    currentBlock = pieceManager.nextPiece();
     gameGrid1.addActor(currentBlock, new Location(6, 0));
     gameGrid1.doRun();
 
@@ -96,97 +72,13 @@ public class Tetris extends JFrame implements GGActListener {
   }
 
   /**
-   * Get the next block. If there is a value in the properties file,
-   * getting the next available block in the list, otherwise getting a random
-   * block
-   * 
-   * @return BlockPieces
-   */
-  private BlockPieces getNextBlock() {
-    if (blockPieceIndex < blockPieces.length) {
-      BlockPieces piece = BlockPieces.getBlockPiece(blockPieces[blockPieceIndex++]);
-      return piece;
-    }
-
-    int rnd = random.nextInt(7);
-    return BlockPieces.values()[rnd];
-  }
-
-  /**
-   * Instantiates the next TetroPiece and its corresponding preview block.
-   * The piece type is determined by {@link #getNextBlock()}, which either reads
-   * from the properties sequence (auto/test mode) or picks randomly.
-   * In auto mode, the piece is also assigned its pre-defined move sequence.
-   * Since all pieces extend TetroPiece, setAutoBlockMove() is called directly
-   * on the base type — no subclass casting required.
+   * Delegates to PieceManager to obtain the next ready-to-place TetroPiece.
+   * Called by TetroPiece.act() when it needs to queue up the following piece.
    *
-   * @return the newly created TetroPiece, ready to be added to the game grid
+   * @return the next TetroPiece, fully configured and previewed
    */
-  TetroPiece createRandomTetrisBlock() {
-    if (blockPreview != null)
-      blockPreview.removeSelf();
-
-    String currentBlockMove = "";
-    if (blockActions.length > blockActionIndex) {
-      currentBlockMove = blockActions[blockActionIndex];
-    }
-    blockActionIndex++;
-
-    BlockPieces randomBlockPiece = getNextBlock();
-    TetroPiece t = null;
-    TetroPiece preview = null;
-
-    switch (randomBlockPiece) {
-      case BlockPieces.I:
-        t = new I(this);
-        preview = new I(this);
-        break;
-      case BlockPieces.J:
-        t = new J(this);
-        preview = new J(this);
-        break;
-      case BlockPieces.L:
-        t = new L(this);
-        preview = new L(this);
-        break;
-      case BlockPieces.O:
-        t = new O(this);
-        preview = new O(this);
-        break;
-      case BlockPieces.S:
-        t = new S(this);
-        preview = new S(this);
-        break;
-      case BlockPieces.T:
-        t = new T(this);
-        preview = new T(this);
-        break;
-      case BlockPieces.Z:
-        t = new Z(this);
-        preview = new Z(this);
-        break;
-      case BlockPieces.CROSS:
-        t = new Cross(this);
-        preview = new Cross(this);
-        break;
-      case BlockPieces.PLUS:
-        t = new Plus(this);
-        preview = new Plus(this);
-        break;
-      case BlockPieces.SLASH:
-        t = new Slash(this);
-        preview = new Slash(this);
-        break;
-    }
-
-    if (isAuto) {
-      t.setAutoBlockMove(currentBlockMove);
-    }
-
-    preview.display(gameGrid2, new Location(2, 1));
-    blockPreview = preview;
-
-    return t;
+  public TetroPiece nextPiece() {
+    return pieceManager.nextPiece();
   }
 
   /**
@@ -204,7 +96,7 @@ public class Tetris extends JFrame implements GGActListener {
   }
 
   private int defaultSimulationPeriod() {
-    return isAuto ? AUTO_SIMULATION_PERIOD : MANUAL_SIMULATION_PERIOD;
+    return isAuto ? TetrisConstants.AUTO_SIMULATION_PERIOD : TetrisConstants.MANUAL_SIMULATION_PERIOD;
   }
 
   public void moveToNextTetris(TetroPiece t) {
@@ -213,7 +105,7 @@ public class Tetris extends JFrame implements GGActListener {
   }
 
   public void speedup() {
-    gameGrid1.setSimulationPeriod(MANUAL_DROP_SIMULATION_PERIOD);
+    gameGrid1.setSimulationPeriod(TetrisConstants.MANUAL_DROP_SIMULATION_PERIOD);
   }
 
   /**
@@ -327,8 +219,8 @@ public class Tetris extends JFrame implements GGActListener {
     gameGrid1.refresh();
     gameGrid2.refresh();
     gameGrid2.delay(getDelayTime());
-    blockActionIndex = 0;
-    currentBlock = createRandomTetrisBlock();
+    pieceManager.reset();
+    currentBlock = pieceManager.nextPiece();
     gameGrid1.addActor(currentBlock, new Location(6, 0));
     gameGrid1.doRun();
     gameGrid1.requestFocus();
