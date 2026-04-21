@@ -10,8 +10,8 @@ public class TetrisConstants {
   public static final int NUM_ROTATIONS = 4;
 
   // Simulation timing (milliseconds)
-  public static final int NORMAL_SIMULATION_PERIOD = 300;
-  public static final int DROP_SIMULATION_PERIOD = 50;
+  public static final int MANUAL_SIMULATION_PERIOD = 300;
+  public static final int MANUAL_DROP_SIMULATION_PERIOD = 50;
   public static final int AUTO_SIMULATION_PERIOD = 50;
 
   // Grid dimensions

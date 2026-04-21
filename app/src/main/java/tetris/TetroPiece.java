@@ -86,7 +86,7 @@ public abstract class TetroPiece extends Actor {
     } else {
       setDirection(90); // fall downward
       if (nb == 1)
-        nextTetrisBlock = tetris.createRandomTetrisBlock();
+        nextTetrisBlock = tetris.nextPiece();
 
       if (!advance()) {
         if (nb == 0) // piece couldn't move at all → game over
