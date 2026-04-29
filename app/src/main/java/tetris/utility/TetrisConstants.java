@@ -3,8 +3,8 @@ package tetris.utility;
 public class TetrisConstants {
   // Spawn position
   // TODO: Remove this later, as the spawn location will be randomised
-  public static final int SPAWN_COLUMN = 6;
-  public static final int SPAWN_ROW = 0;
+  public static final int SPAWN_COLUMNS = 15;
+  public static final int SPAWN_ROWS = 15;
 
   // Rotation
   public static final int NUM_ROTATIONS = 4;

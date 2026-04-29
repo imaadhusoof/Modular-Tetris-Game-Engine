@@ -1,6 +1,9 @@
 package tetris;
 
+import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
+import tetris.utility.TetrisConstants;
+
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
@@ -50,6 +53,11 @@ public class PieceManager {
    * Produces the next TetroPiece ready to be added to the game grid.
    * Also removes the previous preview and displays a new one in gameGrid2.
    */
+  public void createNextPiece(GameGrid gameGrid){
+      TetroPiece piece = nextPiece();
+      gameGrid.addActor(piece,randSpawnLoc(piece));
+  }
+
   public TetroPiece nextPiece() {
     if (blockPreview != null)
       blockPreview.removeSelf();
@@ -67,6 +75,11 @@ public class PieceManager {
     blockPreview = preview;
 
     return piece;
+  }
+
+  public Location randSpawnLoc(TetroPiece piece){
+      return new Location(random.nextInt(TetrisConstants.SPAWN_COLUMNS-piece.relativeHighlightLocations.length)
+              ,random.nextInt(TetrisConstants.SPAWN_ROWS));
   }
 
   public void reset() {

@@ -17,4 +17,5 @@ class PieceFactory {
       case SLASH -> new Slash(tetris);
     };
   }
+
 }

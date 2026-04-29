@@ -19,7 +19,7 @@ public class Tetris extends JFrame implements GGActListener {
 
   private boolean isAuto = false;
 
-  private PieceManager pieceManager;
+  protected PieceManager pieceManager;
 
   static Logger logger = new Logger();
 
@@ -38,7 +38,7 @@ public class Tetris extends JFrame implements GGActListener {
 
     // Add the first block to start
     currentBlock = pieceManager.nextPiece();
-    gameGrid1.addActor(currentBlock, new Location(6, 0));
+    gameGrid1.addActor(currentBlock, pieceManager.randSpawnLoc(currentBlock));
     gameGrid1.doRun();
 
     // Do not lose keyboard focus when clicking this window
@@ -218,7 +218,7 @@ public class Tetris extends JFrame implements GGActListener {
     gameGrid2.delay(getDelayTime());
     pieceManager.reset();
     currentBlock = pieceManager.nextPiece();
-    gameGrid1.addActor(currentBlock, new Location(6, 0));
+    gameGrid1.addActor(currentBlock, pieceManager.randSpawnLoc(currentBlock));
     gameGrid1.doRun();
     gameGrid1.requestFocus();
     score = 0;

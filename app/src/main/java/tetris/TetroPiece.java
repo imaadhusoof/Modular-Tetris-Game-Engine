@@ -7,6 +7,7 @@ import java.util.List;
 public abstract class TetroPiece extends Actor {
 
   protected Tetris tetris;
+  protected PieceManager pieceManager;
 
   // Shared state across all piece types
   protected boolean isStarting = true;
@@ -25,6 +26,7 @@ public abstract class TetroPiece extends Actor {
   protected TetroPiece(Tetris tetris) {
     super();
     this.tetris = tetris;
+    this.pieceManager = tetris.pieceManager;
   }
 
   /** Each concrete piece returns a descriptive string for logging/testing. */
@@ -104,7 +106,8 @@ public abstract class TetroPiece extends Actor {
           tetris.gameOver();
         else {
           setActEnabled(false);
-          gameGrid.addActor(nextTetrisBlock, new Location(6, 0));
+          nextTetrisBlock = tetris.nextPiece();
+          gameGrid.addActor(nextTetrisBlock,pieceManager.randSpawnLoc(nextTetrisBlock));
           tetris.moveToNextTetris(nextTetrisBlock);
         }
       }
