@@ -37,6 +37,11 @@ class Slash extends TetroPiece {
   }
 
   @Override
+  public BlockPieces getBlockType() {
+    return blockPiece;
+  }
+
+  @Override
   void rotate() {
     // cannot rotate, do nothing
   }

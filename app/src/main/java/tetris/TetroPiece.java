@@ -30,6 +30,9 @@ public abstract class TetroPiece extends Actor {
   /** Each concrete piece returns a descriptive string for logging/testing. */
   public abstract String toString();
 
+  /** Returns the BlockPieces enum constant that identifies this piece type. */
+  public abstract BlockPieces getBlockType();
+
   /**
    * Parses a move-sequence string (e.g. "LLTR") into a list of BlockActions
    * and stores them for replay during auto mode. Unrecognised characters are
@@ -59,9 +62,15 @@ public abstract class TetroPiece extends Actor {
   private void autoMove() {
     BlockAction action = autoBlockMoves.get(autoBlockIndex++);
     switch (action) {
-      case L: left();   break;
-      case R: right();  break;
-      case T: rotate(); break;
+      case L:
+        left();
+        break;
+      case R:
+        right();
+        break;
+      case T:
+        rotate();
+        break;
     }
   }
 

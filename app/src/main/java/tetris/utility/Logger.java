@@ -5,21 +5,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Logger {
-    static StringBuilder stringBuilder = new StringBuilder();
-    private int lineNumber = 1;
-    public Logger() {
-    }
+  static StringBuilder stringBuilder = new StringBuilder();
+  private int lineNumber = 1;
 
-    /**
-     * Log event for testing purpose
-     * @param event: the event to log
-     */
-    public void logEvent(String event) {
-        stringBuilder.append(lineNumber + "." + event + "\n");
-        lineNumber++;
-    }
+  public Logger() {
+  }
 
-    public String getAllLog() {
-        return stringBuilder.toString();
-    }
+  /**
+   * Log event for testing purpose
+   * 
+   * @param event: the event to log
+   */
+  public void logEvent(String event) {
+    stringBuilder.append(lineNumber + "." + event + "\n");
+    lineNumber++;
+  }
+
+  public String getAllLog() {
+    return stringBuilder.toString();
+  }
 }

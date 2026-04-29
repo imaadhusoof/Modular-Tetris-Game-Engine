@@ -28,4 +28,9 @@ class L extends TetroPiece {
     return "Block: " + blockPiece.getBlockName() + ". Location: " + getX() + "-" + getY() + ". Rotation: " + rotationId;
   }
 
+  @Override
+  public BlockPieces getBlockType() {
+    return blockPiece;
+  }
+
 }
