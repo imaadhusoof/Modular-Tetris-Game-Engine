@@ -124,10 +124,13 @@ public abstract class TetroPiece extends Actor {
           tetris.gameOver();
         } else {
           setActEnabled(false);
-          nextTetrisBlock = tetris.nextPiece();
+          // nextTetrisBlock was already fetched at nb==1 for the preview.
+          // Only call nextPiece() again if the piece landed before nb reached 1.
+          if (nextTetrisBlock == null) {
+            nextTetrisBlock = tetris.nextPiece();
+          }
           gameGrid.addActor(nextTetrisBlock, pieceManager.randSpawnLoc(nextTetrisBlock));
           tetris.moveToNextTetris(nextTetrisBlock);
-
         }
       }
       nb++;

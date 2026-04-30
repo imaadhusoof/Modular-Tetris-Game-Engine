@@ -23,7 +23,7 @@ public class Tetris extends JFrame implements GGActListener {
 
   protected PieceManager pieceManager;
 
-  static Logger logger = new Logger();
+  Logger logger = new Logger();
 
   public Tetris(Properties properties) {
     this.isAuto = Boolean.parseBoolean(properties.getProperty("isAuto"));

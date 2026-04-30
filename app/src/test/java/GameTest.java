@@ -87,7 +87,7 @@ public class GameTest {
     }
 
     private static String getStatisticsLog() {
-        String statisticsFilePath = "statistics.txt";
+        String statisticsFilePath = "../Statistics.txt";
         Scanner scanner;
         try {
             scanner = new Scanner(new File(statisticsFilePath));

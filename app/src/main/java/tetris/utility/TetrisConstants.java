@@ -6,6 +6,10 @@ public class TetrisConstants {
   public static final int SPAWN_COLUMNS = 15;
   public static final int SPAWN_ROWS = 15;
 
+  // Default (non-Feature-2) fixed spawn position: centre of the top row
+  public static final int DEFAULT_SPAWN_COL = 6;
+  public static final int DEFAULT_SPAWN_ROW = 0;
+
   // Rotation
   public static final int NUM_ROTATIONS = 4;
 
