@@ -18,6 +18,8 @@ public abstract class TetroPiece extends Actor {
   protected List<BlockAction> autoBlockMoves = new ArrayList<>();
   protected int autoBlockIndex = 0;
 
+  protected int fallSpeed = 1;
+
   // Highlight arrays: dimensions vary per piece, so subclass constructors
   // must initialise both before the first act() call.
   protected Location[][] relativeHighlightLocations;
@@ -49,6 +51,10 @@ public abstract class TetroPiece extends Actor {
       if (action != null)
         autoBlockMoves.add(action);
     }
+  }
+
+  public void setFallSpeed(int speed) {
+    this.fallSpeed = speed;
   }
 
   /**
@@ -101,14 +107,27 @@ public abstract class TetroPiece extends Actor {
       if (nb == 1)
         nextTetrisBlock = tetris.nextPiece();
 
-      if (!advance()) {
-        if (nb == 0) // piece couldn't move at all → game over
+      boolean landed = false;
+
+      // to track when the piece can't even move one cell
+      boolean movedAtLeastOnce = false;
+      for (int i = 0; i < fallSpeed; i++) {
+        if (!advance()) {
+          landed = true;
+          break;
+        }
+        movedAtLeastOnce = true;
+      }
+
+      if (landed) {
+        if (nb == 0 && !movedAtLeastOnce) {
           tetris.gameOver();
-        else {
+        } else {
           setActEnabled(false);
           nextTetrisBlock = tetris.nextPiece();
-          gameGrid.addActor(nextTetrisBlock,pieceManager.randSpawnLoc(nextTetrisBlock));
+          gameGrid.addActor(nextTetrisBlock, pieceManager.randSpawnLoc(nextTetrisBlock));
           tetris.moveToNextTetris(nextTetrisBlock);
+
         }
       }
       nb++;

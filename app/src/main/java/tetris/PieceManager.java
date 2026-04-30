@@ -27,24 +27,36 @@ public class PieceManager {
 
   private final Tetris tetris;
   private final boolean isAuto;
+  private final boolean isFeatOneActive;
+  private final boolean isFeatTwoActive;
   private final Random random;
 
   private final BlockPieces[] blockPieces;
   private final String[] blockActions;
 
+  private final Integer[] blockSpeeds;
+  private int blockSpeedIndex = 0;
+
   private int blockPieceIndex = 0;
   private int blockActionIndex = 0;
   private TetroPiece blockPreview = null;
 
-  public PieceManager(Tetris tetris, Properties properties, boolean isAuto) {
+  public PieceManager(Tetris tetris, Properties properties, boolean isAuto, boolean isFeatOneActive, boolean isFeatTwoActive) {
     this.tetris = tetris;
     this.isAuto = isAuto;
+    this.isFeatOneActive = isFeatOneActive;
+    this.isFeatTwoActive = isFeatTwoActive;
+
+
     this.random = new Random(30006);
 
     String[] rawPieces = properties.getProperty("pieces", "").split(",");
     this.blockPieces = Arrays.stream(rawPieces)
         .map(BlockPieces::getBlockPiece)
         .toArray(BlockPieces[]::new);
+
+    String[] rawSpeeds = properties.getProperty("speed", "").split(",");
+    this.blockSpeeds = Arrays.stream(rawSpeeds).map(Integer::parseInt).toArray(Integer[]::new);
 
     this.blockActions = properties.getProperty("actions", "").split(",");
   }
@@ -71,6 +83,11 @@ public class PieceManager {
     if (isAuto)
       piece.setAutoBlockMove(moves);
 
+    // TODO: Check the feature flag as well
+    // if (isFeatOneActive)
+
+    if (isFeatTwoActive) piece.setFallSpeed(getNextSpeed());
+
     preview.display(tetris.gameGrid2, new Location(2, 1));
     blockPreview = preview;
 
@@ -95,6 +112,7 @@ public class PieceManager {
   public void reset() {
     blockPieceIndex = 0;
     blockActionIndex = 0;
+    blockSpeedIndex = 0;
   }
 
   // Private helpers
@@ -109,6 +127,15 @@ public class PieceManager {
     if (blockActionIndex < blockActions.length)
       return blockActions[blockActionIndex++];
     return "";
+  }
+
+  private int getNextSpeed() {
+    if (blockSpeedIndex < blockSpeeds.length) {
+      int s = blockSpeeds[blockSpeedIndex++];
+      if (s >= 1 && s <= 3) return s;
+    }
+
+    return random.nextInt(3) + 1; // random: 1,2,3
   }
 
   private boolean isSpawnBlocked(TetroPiece piece, Location anchor) {

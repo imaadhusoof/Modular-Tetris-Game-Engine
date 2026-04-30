@@ -18,6 +18,8 @@ public class Tetris extends JFrame implements GGActListener {
   private StatisticsRecorder statisticsRecorder;
 
   private boolean isAuto = false;
+  private final boolean isFeatOneActive;
+  private final boolean isFeatTwoActive;
 
   protected PieceManager pieceManager;
 
@@ -25,7 +27,9 @@ public class Tetris extends JFrame implements GGActListener {
 
   public Tetris(Properties properties) {
     this.isAuto = Boolean.parseBoolean(properties.getProperty("isAuto"));
-    this.pieceManager = new PieceManager(this, properties, isAuto);
+    this.isFeatOneActive = toFeatureFlag(properties.getProperty("features.1"));
+    this.isFeatTwoActive = toFeatureFlag(properties.getProperty("features.2"));
+    this.pieceManager = new PieceManager(this, properties, isAuto, isFeatOneActive, isFeatTwoActive);
 
     // Set up the UI components. No need to modify the UI Components
     tetrisComponents = new TetrisComponents();
@@ -46,6 +50,12 @@ public class Tetris extends JFrame implements GGActListener {
     setTitle("SWEN30006 Tetris Madness");
     score = 0;
     showScore(score);
+  }
+
+  private boolean toFeatureFlag(String value) {
+    return value != null
+            && !value.trim().isEmpty()
+            && !value.equalsIgnoreCase("inactive");
   }
 
   /**
