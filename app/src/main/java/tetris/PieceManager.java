@@ -53,9 +53,9 @@ public class PieceManager {
    * Produces the next TetroPiece ready to be added to the game grid.
    * Also removes the previous preview and displays a new one in gameGrid2.
    */
-  public void createNextPiece(GameGrid gameGrid){
-      TetroPiece piece = nextPiece();
-      gameGrid.addActor(piece,randSpawnLoc(piece));
+  public void createNextPiece(GameGrid gameGrid) {
+    TetroPiece piece = nextPiece();
+    gameGrid.addActor(piece, randSpawnLoc(piece));
   }
 
   public TetroPiece nextPiece() {
@@ -77,9 +77,19 @@ public class PieceManager {
     return piece;
   }
 
-  public Location randSpawnLoc(TetroPiece piece){
-      return new Location(random.nextInt(TetrisConstants.SPAWN_COLUMNS-piece.relativeHighlightLocations.length)
-              ,random.nextInt(TetrisConstants.SPAWN_ROWS));
+  public Location randSpawnLoc(TetroPiece piece) {
+    int width = piece.relativeHighlightLocations.length; // x-span of bounding box
+    Location loc;
+    int maxAttempts = 200;
+
+    do {
+      int col = random.nextInt(TetrisConstants.GRID_WIDTH - width);
+      int row = random.nextInt(TetrisConstants.SPAWN_ROWS);
+      loc = new Location(col, row);
+      maxAttempts--;
+    } while (maxAttempts > 0 && isSpawnBlocked(piece, loc));
+
+    return loc;
   }
 
   public void reset() {
@@ -99,5 +109,23 @@ public class PieceManager {
     if (blockActionIndex < blockActions.length)
       return blockActions[blockActionIndex++];
     return "";
+  }
+
+  private boolean isSpawnBlocked(TetroPiece piece, Location anchor) {
+    // Check that each block's position one row below the spawn anchor is free
+    for (TetroBlock block : piece.blocks) {
+      Location nextLoc = new Location(
+          anchor.x + block.getRelativeLocation(0).x,
+          anchor.y + block.getRelativeLocation(0).y + 1);
+
+      if (!tetris.gameGrid1.isInGrid(nextLoc))
+        return true;
+
+      if (tetris.gameGrid1.getOneActorAt(nextLoc, TetroBlock.class) != null)
+        return true;
+
+    }
+
+    return false;
   }
 }
