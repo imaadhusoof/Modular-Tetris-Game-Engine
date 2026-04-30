@@ -83,9 +83,6 @@ public class PieceManager {
     if (isAuto)
       piece.setAutoBlockMove(moves);
 
-    // TODO: Check the feature flag as well
-    // if (isFeatOneActive)
-
     if (isFeatTwoActive) piece.setFallSpeed(getNextSpeed());
 
     preview.display(tetris.gameGrid2, new Location(2, 1));
@@ -117,10 +114,22 @@ public class PieceManager {
 
   // Private helpers
 
+  private static final BlockPieces[] EXTENDED_PIECES = { BlockPieces.CROSS, BlockPieces.PLUS, BlockPieces.SLASH };
+
+  private boolean isExtendedPiece(BlockPieces type) {
+    for (BlockPieces ep : EXTENDED_PIECES)
+      if (ep == type) return true;
+    return false;
+  }
+
   private BlockPieces getNextBlockType() {
-    if (blockPieceIndex < blockPieces.length)
-      return blockPieces[blockPieceIndex++];
-    return BlockPieces.values()[random.nextInt(7)];
+    while (blockPieceIndex < blockPieces.length) {
+      BlockPieces type = blockPieces[blockPieceIndex++];
+      if (!isFeatOneActive && isExtendedPiece(type))
+        continue;
+      return type;
+    }
+    return BlockPieces.values()[random.nextInt(isFeatOneActive ? 10 : 7)];
   }
 
   private String getNextAction() {
