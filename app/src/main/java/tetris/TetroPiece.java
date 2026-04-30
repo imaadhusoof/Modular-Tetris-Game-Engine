@@ -124,6 +124,13 @@ public abstract class TetroPiece extends Actor {
           tetris.gameOver();
         } else {
           setActEnabled(false);
+          // When fallSpeed > 1 the piece may advance part-way in the landing
+          // tick before hitting an obstacle. Tetris.act() will log the NEXT
+          // block because currentBlock has already switched, so the final
+          // resting position of this piece would be lost. Log it explicitly.
+          if (movedAtLeastOnce) {
+            tetris.logger.logEvent(this.toString());
+          }
           // nextTetrisBlock was already fetched at nb==1 for the preview.
           // Only call nextPiece() again if the piece landed before nb reached 1.
           if (nextTetrisBlock == null) {
