@@ -4,7 +4,9 @@ import ch.aplu.jgamegrid.GameGrid;
 import ch.aplu.jgamegrid.Location;
 import tetris.utility.TetrisConstants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -32,7 +34,7 @@ public class PieceManager {
   private final Random random;
 
   private final BlockPieces[] blockPieces;
-  private final String[] blockActions;
+  private final List<BlockAction>[] blockActions;
 
   private final Integer[] blockSpeeds;
   private int blockSpeedIndex = 0;
@@ -74,7 +76,18 @@ public class PieceManager {
       }).toArray(Location[]::new);
     }
 
-    this.blockActions = properties.getProperty("actions", "").split(",");
+    String[] rawActions = properties.getProperty("actions", "").split(",");
+    List<BlockAction>[] parsedActions = new List[rawActions.length];
+    for (int i = 0; i < rawActions.length; i++) {
+      List<BlockAction> moves = new ArrayList<>();
+      for (char c : rawActions[i].toCharArray()) {
+        BlockAction action = BlockAction.fromChar(c);
+        if (action != null)
+          moves.add(action);
+      }
+      parsedActions[i] = moves;
+    }
+    this.blockActions = parsedActions;
   }
 
   /**
@@ -91,7 +104,7 @@ public class PieceManager {
       blockPreview.removeSelf();
 
     BlockPieces type = getNextBlockType();
-    String moves = getNextAction();
+    List<BlockAction> moves = getNextAction();
 
     TetroPiece piece = PieceFactory.create(type, tetris);
     TetroPiece preview = PieceFactory.create(type, tetris);
@@ -159,10 +172,10 @@ public class PieceManager {
     return BlockPieces.values()[random.nextInt(isFeatOneActive ? 10 : 7)];
   }
 
-  private String getNextAction() {
+  private List<BlockAction> getNextAction() {
     if (blockActionIndex < blockActions.length)
       return blockActions[blockActionIndex++];
-    return "";
+    return List.of();
   }
 
   private int getNextSpeed() {

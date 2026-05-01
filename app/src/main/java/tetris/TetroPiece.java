@@ -38,19 +38,12 @@ public abstract class TetroPiece extends Actor {
   public abstract BlockPieces getBlockType();
 
   /**
-   * Parses a move-sequence string (e.g. "LLTR") into a list of BlockActions
-   * and stores them for replay during auto mode. Unrecognised characters are
-   * silently ignored.
+   * Sets the pre-parsed list of BlockActions to replay during auto mode.
    *
-   * @param moveSequence the raw action string from the properties file
+   * @param moves the list of BlockAction values for this piece
    */
-  public void setAutoBlockMove(String moveSequence) {
-    autoBlockMoves = new ArrayList<>();
-    for (char c : moveSequence.toCharArray()) {
-      BlockAction action = BlockAction.fromChar(c);
-      if (action != null)
-        autoBlockMoves.add(action);
-    }
+  public void setAutoBlockMove(List<BlockAction> moves) {
+    autoBlockMoves = new ArrayList<>(moves);
   }
 
   public void setFallSpeed(int speed) {
