@@ -31,3 +31,14 @@ dist/
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+# IDE project files
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+bin/
+
+# Written by the game at runtime
+Statistics.txt
